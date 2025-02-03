@@ -1,25 +1,25 @@
 package com.aro.Service;
 
-import com.aro.Entity.User;
+import com.aro.Entity.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 public class CustomUserDetails implements UserDetails {
 
-    private final User user;
+    private final Users user;
 
-    public CustomUserDetails(User user){
+    public CustomUserDetails(Users user){
         this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")); // so i could do the simple thing to fetched from the roles
+        // database their roles and add it here
     }
 
     @Override

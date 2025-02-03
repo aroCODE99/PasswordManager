@@ -1,8 +1,6 @@
 package com.aro.Security;
 
 import com.aro.Service.CustomUserDetailsService;
-import com.aro.Service.JwtService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

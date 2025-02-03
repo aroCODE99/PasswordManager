@@ -31,14 +31,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
         throws ServletException, IOException
     {
-        // first get the Authorization header
-        System.out.println("This is the jwtFilters start");
         String header = request.getHeader("Authorization");
         String token = null;
         String userEmail = null;
 
         if (header != null && header.startsWith("Bearer ")) {
-            System.out.println("this is when we found the token");
             token = header.substring(7);
             userEmail = jwtService.extractSubject(token); // this will extract the userEmail from the token
         }

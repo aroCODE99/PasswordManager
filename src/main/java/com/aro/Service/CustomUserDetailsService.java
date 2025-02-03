@@ -1,6 +1,6 @@
 package com.aro.Service;
 
-import com.aro.Entity.User;
+import com.aro.Entity.Users;
 import com.aro.Repositorys.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,8 +18,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByEmail(userEmail);
+        Optional<Users> user = userRepository.findByEmail(userEmail);
         return user.map(CustomUserDetails::new)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            .orElseThrow(() -> new UsernameNotFoundException("Users not found"));
     }
 }
