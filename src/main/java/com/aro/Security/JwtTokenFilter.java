@@ -1,6 +1,5 @@
 package com.aro.Security;
 
-import com.aro.Service.CustomUserDetails;
 import com.aro.Service.CustomUserDetailsService;
 import com.aro.Service.JwtService;
 import jakarta.servlet.FilterChain;

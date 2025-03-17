@@ -1,8 +1,6 @@
 package com.aro.Entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -18,10 +16,6 @@ public class Users {
 
     private String email;
     private String password;
-
-    // so i, only want the uni-directional mapping
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<UserRoles> roles;
 
     // Default constructor
     public Users() {
@@ -68,11 +62,15 @@ public class Users {
         this.password = password;
     }
 
-    public Set<UserRoles> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<UserRoles> roles) {
-        this.roles = roles;
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Users{");
+        sb.append("userId=").append(userId);
+        sb.append(", version=").append(version);
+        sb.append(", email='").append(email).append('\'');
+        sb.append(", password='").append(password).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }
+//  so this is the entity for the user login info

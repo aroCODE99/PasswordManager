@@ -1,6 +1,5 @@
 package com.aro.Entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -57,11 +56,3 @@ public class UserRoles {
     }
 
 }
-
-
-// so we have to make the userRoles to not recurse into the user
-
-
-
-
-

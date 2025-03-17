@@ -80,7 +80,11 @@ public class UserService {
         return user.orElseThrow(() -> new UsernameNotFoundException("User Not found"));
     }
 
+    public Users getUserById(Long userId) {
+        Optional<Users> user = userRepo.findById(userId);
 
+        return user.orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+    }
 }
 
 // I GOT THE SOLUTION WE JUST STORE THE USER_ID  INT THE JWT TOKEN AND DO THE EVERY THING

@@ -11,7 +11,7 @@ public class Passwords {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long passwordId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String url; // url in which the user has been logged in
 
     @Column(nullable = false)
@@ -22,6 +22,9 @@ public class Passwords {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private Users user;
+
+    @Version
+    private Integer version;  // Optimistic Locking Version Field
 
     public Passwords() {
     }
@@ -80,4 +83,8 @@ public class Passwords {
         sb.append('}');
         return sb.toString();
     }
+
 }
+// The issue with aesUtil not getting injected in your Passwords entity class is because Spring does not manage entity classes like it does with regular
+// beans (e.g., @Component, @Service, @Repository). Entities are managed by JPA/Hibernate, and Spring's dependency injection (DI) does not automatically
+// inject beans into them.

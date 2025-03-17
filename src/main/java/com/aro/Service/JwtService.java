@@ -7,6 +7,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -22,29 +24,53 @@ public class JwtService {
     @Autowired
     private UserRepository userRepo;
 
-    // Replace this with a secure key in a real application, ideally fetched from environment variables
-    // I am leaving this for the future aro plz solve this by finding out how to get the secret key and how to store one
-    public static final String secretKey = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
+    @Value("${jwt.secret}")
+    private String secretKey;
 
+    // now we also have to change this method to also include the validation of the 2fa
     public String generateTheToken(Users user) {
+        long expirationTime = 60 * 60 * 1000; // 30 minutes in milliseconds
         Map<String, Object> claims = new HashMap<>();
 
-        // fetching the whole user from the database
+        // fetching the whole user from the database because we need the userId for other purposes
         Users fetchedUser = userRepo.findByEmail(user.getEmail()).orElseThrow(
             () -> new UsernameNotFoundException("Not Found"));
         claims.put("userId", fetchedUser.getUserId());  // Ensure userId is explicitly included
-        claims.put("userEmail", fetchedUser.getEmail());
 
         return Jwts.builder()
             .claims(claims)
             .subject(user.getEmail())
             .issuedAt(new Date())
-            .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 10000)) // Expiry of 1 hour
+            .expiration(new Date(System.currentTimeMillis() + expirationTime))
             .signWith(getKey()) // Sign the token
             .compact();
     }
 
+    public String generateTheToken(Users user, boolean is2FAValidated) {
+        long expirationTime = 30 * 60 * 1000; // 30 minutes in milliseconds
+        Map<String, Object> claims = new HashMap<>();
+
+        // fetching the whole user from the database because we need the userId for other purposes
+        Users fetchedUser = userRepo.findByEmail(user.getEmail()).orElseThrow(
+            () -> new UsernameNotFoundException("Not Found"));
+        claims.put("userId", fetchedUser.getUserId());  // Ensure userId is explicitly included
+        claims.put("IS_2FA_VALID", is2FAValidated);
+
+        return Jwts.builder()
+            .claims(claims)
+            .subject(user.getEmail())
+            .issuedAt(new Date())
+            .expiration(new Date(System.currentTimeMillis() + expirationTime)) // expiry should be the half hour
+            .signWith(getKey())
+            .compact();
+    }
+
+
     public SecretKey getKey() {
+        // WHAT IS BASE64 ENCODING AND WHY IS IT IMPORTANT ?
+        // When encrypting data (like passwords), the output is usually binary data (raw bytes).
+        // Problem: Binary data is not human-readable and may contain special characters that can cause issues when storing or transmitting the data.
+        //✅ Solution: Base64 encoding converts binary data into a text format that can be safely stored or transmitted.
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
@@ -79,4 +105,15 @@ public class JwtService {
     public Date extractExpiry(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
+
+    public ResponseEntity<String> extractToken(String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer")) {
+            return ResponseEntity.badRequest().body("Invalid Authorization header");
+        }
+
+        return ResponseEntity.ok(authHeader.substring(7));
+    }
 }
+
+
+// now it been giving me the error of the jwt token expired which is clearly not

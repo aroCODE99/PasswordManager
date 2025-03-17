@@ -1,8 +1,8 @@
 package com.aro.Controller;
 
+import com.aro.DTO.PasswordsDTO;
 import com.aro.Entity.Passwords;
 import com.aro.Entity.Users;
-import com.aro.Repositorys.PasswordsRepo;
 import com.aro.Service.JwtService;
 import com.aro.Service.PasswordManagerService;
 import com.aro.Service.UserService;
@@ -26,18 +26,11 @@ public class UserControllers {
 
     private JwtService jwtService;
 
-    private PasswordsRepo passwordsRepo;
-
-    private PasswordManagerService passwordManagerService;
-
     public UserControllers(UserService userService, AuthenticationManager authManager,
-                           JwtService jwtService, PasswordsRepo passwordsRepo, PasswordManagerService passwordManagerService)
-    {
+                           JwtService jwtService) {
         this.userService = userService;
         this.authManager = authManager;
         this.jwtService = jwtService;
-        this.passwordsRepo = passwordsRepo;
-        this.passwordManagerService = passwordManagerService;
     }
 
     @GetMapping("/hello")
@@ -46,8 +39,13 @@ public class UserControllers {
     }
 
     @PostMapping("/register")
-    public void register(@RequestBody Users user) {
-        userService.addUser(user, DEFUALT_ROLE);
+    public ResponseEntity<String> register(@RequestBody Users user) {
+        try {
+            userService.addUser(user, DEFUALT_ROLE);
+            return ResponseEntity.ok("user added successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/login")
@@ -62,33 +60,7 @@ public class UserControllers {
         return ResponseEntity.badRequest().body("failed to logged in");
     }
 
-    @PostMapping("/addNewPassword")
-    public ResponseEntity<String> addNewPassword(@RequestHeader("Authorization") String authHeader,
-                               @RequestBody Passwords passwords)
-    {
-        return passwordManagerService.addNewPassword(authHeader, passwords);
-    }
-
-    @PostMapping("/deleteById/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable Long id) {
-        return passwordManagerService.removePasswordById(id);
-    }
-
-    @PostMapping("/findAllPasswords")
-    public ResponseEntity<List<Passwords>> findAllPasswords(@RequestHeader("Authorization") String authHeader) {
-        return passwordManagerService.getAllPasswordsByUserId(authHeader);
-    }
-
-    @PostMapping("/update/{id}")
-    public ResponseEntity<Passwords> updateTheGivenPassword(@PathVariable Long id, @RequestBody Passwords updatePassword) {
-        Passwords newSavedPassword = passwordManagerService.updateThePassword(id, updatePassword);
-
-        if (newSavedPassword == null) {
-            return ResponseEntity.badRequest().body(null);
-        }
-
-        return ResponseEntity.ok(newSavedPassword);
-    }
-
 }
 
+// so now i have to make the addPasswordTo the Db api return the added password
+// now let's try to make the otpSending api
