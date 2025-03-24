@@ -6,7 +6,6 @@ import com.aro.Service.JwtService;
 import com.aro.Service.OTPService;
 import com.aro.Service.UserService;
 import io.jsonwebtoken.Claims;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -148,8 +147,8 @@ public class EmailController {
 
 }
 
-// now this will be use for checking the user if he is 2FA_Validated or not
-// now the real question is do we need the main token also to validate the user we only need this token
+// now this will be use for checking the user if he is 2FA_Validated or not now the real question is do we need the main
+// token also to validate the user we only need this token
 // or we could just use the this token to act as the main token but just with few extra claims
 
 // now let's make the test validateOtp controller

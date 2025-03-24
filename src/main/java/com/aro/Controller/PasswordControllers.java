@@ -20,14 +20,14 @@ public class PasswordControllers {
     }
 
     @PostMapping("/addNewPassword")
-    public ResponseEntity<String> addNewPassword(@RequestHeader("Authorization") String authHeader,
+    public ResponseEntity<PasswordsDTO> addNewPassword(@RequestHeader("Authorization") String authHeader,
                                                  @RequestBody Passwords passwords) {
         return passwordManagerService.addNewPassword(authHeader, passwords);
     }
 
     // the error is that we are not able to save the same url in the database
-    @PostMapping("/deleteById/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable Long id) {
+    @DeleteMapping("/deleteById/{id}")
+    public ResponseEntity<Long> deleteById(@PathVariable Long id) {
         return passwordManagerService.removePasswordById(id);
     }
 
@@ -37,14 +37,8 @@ public class PasswordControllers {
     }
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<Passwords> updateTheGivenPassword(@PathVariable Long id, @RequestBody Passwords updatePassword) {
-        Passwords newSavedPassword = passwordManagerService.updateThePassword(id, updatePassword);
-
-        if (newSavedPassword == null) {
-            return ResponseEntity.badRequest().body(null);
-        }
-
-        return ResponseEntity.ok(newSavedPassword);
+    public ResponseEntity<PasswordsDTO> updateTheGivenPassword(@PathVariable Long id, @RequestBody PasswordsDTO updatePassword) {
+        return passwordManagerService.updateThePassword(id, updatePassword);
     }
 
 }

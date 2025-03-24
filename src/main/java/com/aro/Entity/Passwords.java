@@ -19,9 +19,16 @@ public class Passwords {
 
     private LocalDateTime createdAt; // this will store the register time of that password
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private Users user;
+
+    @Column(columnDefinition = "TEXT", nullable = true) // Optional field
+    private String note;
 
     @Version
     private Integer version;  // Optimistic Locking Version Field
@@ -29,11 +36,12 @@ public class Passwords {
     public Passwords() {
     }
 
-    public Passwords(Users user, String url, String password) {
+    public Passwords(Users user, String url, String password, String note) {
         this.user = user;
         this.url = url;
         this.password = password;
         this.createdAt = LocalDateTime.now();
+        this.note = note;
     }
 
     public Long getPasswordId() {
@@ -60,6 +68,14 @@ public class Passwords {
         this.password = password;
     }
 
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -80,6 +96,8 @@ public class Passwords {
         sb.append(", password='").append(password).append('\'');
         sb.append(", createdAt=").append(createdAt);
         sb.append(", user=").append(user);
+        sb.append(", note='").append(note).append('\'');
+        sb.append(", version=").append(version);
         sb.append('}');
         return sb.toString();
     }

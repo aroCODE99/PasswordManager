@@ -1,0 +1,18 @@
+@font-face {
+	font-family: 'NerdFont';
+	src: url('/fonts/JetBrainsMono-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+:root {
+    --base-font-size: 20px;
+}
+
+body {
+    font-size: var(--base-font-size);
+	font-family: 'NerdFont', 'sans-serif';
+	color: black;
+	margin: 0;
+	padding: 0;
+}

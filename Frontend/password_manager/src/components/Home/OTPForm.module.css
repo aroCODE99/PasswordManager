@@ -1,0 +1,60 @@
+.container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	background-color: #f4f4f4;
+}
+
+.otpForm {
+	background: white;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+	text-align: center;
+}
+
+.label {
+	font-size: 18px;
+	font-weight: bold;
+	margin-bottom: 10px;
+	display: block;
+}
+
+.otpInputs {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	margin: 15px 0;
+}
+
+.otpInput {
+	width: 40px;
+	height: 50px;
+	font-size: 20px;
+	text-align: center;
+	border: 2px solid #ddd;
+	border-radius: 5px;
+	outline: none;
+	transition: border-color 0.3s;
+}
+
+.otpInput:focus {
+	border-color: #007bff;
+}
+
+.submitButton {
+	background-color: #007bff;
+	color: white;
+	padding: 10px 15px;
+	font-size: 16px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background 0.3s;
+}
+
+.submitButton:hover {
+	background-color: #0056b3;
+}
+

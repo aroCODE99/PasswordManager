@@ -2,6 +2,7 @@ package com.aro.Security;
 
 import com.aro.Service.CustomUserDetailsService;
 import com.aro.Service.JwtService;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,26 +35,34 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String token = null;
         String userEmail = null;
 
-        if (header != null && header.startsWith("Bearer ")) {
-            token = header.substring(7);
-            userEmail = jwtService.extractSubject(token); // this will extract the userEmail from the token
-        }
-
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // Validate token and set authentication
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-            if (jwtService.validateToken(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.getAuthorities()
-                );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+        try {
+            if (header != null && header.startsWith("Bearer ")) {
+                token = header.substring(7);
+                userEmail = jwtService.extractSubject(token);
             }
+
+            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+
+                if (jwtService.validateToken(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }
+
+        } catch (ExpiredJwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token expired");
+            return;
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid token");
+            return;
         }
 
-        // Continue the filter chain
         filterChain.doFilter(request, response);
     }
 }

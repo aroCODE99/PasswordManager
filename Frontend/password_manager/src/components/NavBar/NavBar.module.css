@@ -1,0 +1,148 @@
+.navBar {
+	padding: 0 10px;
+	background: linear-gradient(to right, #6366f1, #4f46e5);
+	display: flex;
+	align-items: center; 
+	justify-content: space-between;
+	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navBar ul {
+	list-style-type: none;
+	display: flex;
+	align-items: center; 
+	justify-content: center;
+	gap: 16px;
+}
+
+.navBar ul li {
+	position: relative;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+
+.navBar ul li:hover {
+	background: rgba(255, 255, 255, 0.2);
+}
+
+.profileContainer {
+	position: relative; /* Needed for absolute dropdown positioning */
+	display: inline-block;
+}
+
+/* Profile Image */
+.profileImg {
+	width: 40px;
+	border: 2px solid white;
+	border-radius: 50%;
+	cursor: pointer;
+	transition: opacity 0.3s ease;
+}
+
+.profileImg:hover {
+	opacity: 0.8;
+}
+
+/* Dropdown */
+.dropDown {
+	position: absolute;
+	top: 70px;
+	right: 0;
+	background: white;
+	box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+	border-radius: 8px;
+	width: 180px;
+	transform: translateY(-10px);
+	transition: opacity 0.3s ease, transform 0.3s ease;
+	z-index: 100;
+	padding: 8px 0;
+}
+
+/* Logout button */
+.logout {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 16px;
+	color: red;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.logout button {
+	background: transparent;
+	border: none;
+	color: red;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.logout:hover {
+	background: grey;
+}
+
+.logo {
+	text-decoration: none;
+	font-size: 22px; /* Slightly larger */
+	font-weight: bold;
+	color: #fff; /* White text */
+	background: linear-gradient(to right, #6366f1, #818cf8); /* darker indigo tones */
+	padding: 8px 16px;
+	border-radius: 8px; /* Soft rounded corners */
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+	transition: all 0.4s ease;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.logo img {
+	margin-right: 10px;
+}
+
+.logo:hover {
+	transform: scale(1.05);
+	box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.searchBar {
+	padding: 10px;
+	font-size: 15px;
+	min-width: 300px;
+	border: none;
+	outline: none;
+	border-radius: 6px;
+}
+
+/* ThemeSwitcher.module.css */
+.toggleThemeButton {
+	width: 50px;
+	height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	border: none;
+	cursor: pointer;
+	transition: background-color 0.3s ease, transform 0.2s ease;
+	font-size: 1.5rem;
+	color: white;
+}
+
+.toggleThemeButton:hover {
+	transform: scale(1.1);
+}
+
+.dark {
+	background-color: var(--dark-bg);
+}
+
+/* Define color variables */
+:root {
+	--light-bg: #e2e8f0;
+	--dark-bg: #2d3748;
+}

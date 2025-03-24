@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,11 +44,11 @@ public class PasswordManagerService {
     }
 
     @Transactional
-    public ResponseEntity<String> addNewPassword(String authHeader, Passwords password) {
+    public ResponseEntity<PasswordsDTO> addNewPassword(String authHeader, Passwords password) {
         Users user = extractUser(authHeader);
 
         if (user == null) {
-            return ResponseEntity.badRequest().body("Failed to add the new password: User not found");
+            return ResponseEntity.badRequest().body(null);
         }
 
         try {
@@ -57,23 +58,39 @@ public class PasswordManagerService {
             Passwords savingPurposePassword = new Passwords(
                 user,
                 password.getUrl(),
-                encryptedPassword
+                encryptedPassword,
+                password.getNote()
             );
 
-            passwordsRepo.save(savingPurposePassword);
+            // Save to DB
+            Passwords savedEntity = passwordsRepo.save(savingPurposePassword);
 
-            return ResponseEntity.ok("New password saved successfully");
+            String decryptedPassword = aesUtil.decrypt(savedEntity.getPassword());
+
+            PasswordsDTO savedPassword = new PasswordsDTO(
+                savedEntity.getPasswordId(),
+                savedEntity.getUrl(),
+                decryptedPassword,
+                savedEntity.getCreatedAt(),
+                savedEntity.getNote()
+            );
+
+            System.out.println(savedPassword);
+            return ResponseEntity.ok(savedPassword);
         } catch (Exception e) {
             log.error("Error while encrypting or saving password: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Failed to add new password due to an internal error");
+                .body(null);
         }
     }
 
-    @Transactional
-    public ResponseEntity<String> removePasswordById(Long passwordId) {
-        passwordsRepo.deleteById(passwordId);
-        return ResponseEntity.ok("Password entity deleted for the user");
+    public ResponseEntity<Long> removePasswordById(Long id) {
+        if (passwordsRepo.existsById(id)) {
+            passwordsRepo.deleteById(id);
+            return ResponseEntity.ok(id);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     // now i have to make this api return the user with the all decrypted password
@@ -90,7 +107,8 @@ public class PasswordManagerService {
                         password.getPasswordId(),
                         password.getUrl(),
                         decryptedPassword,
-                        password.getCreatedAt()
+                        password.getCreatedAt(),
+                        password.getNote()
                     )
                 );
             } catch (Exception e) {
@@ -102,19 +120,33 @@ public class PasswordManagerService {
     }
 
     // so this is api is going to be use for the updating the passwords database
-    public Passwords updateThePassword(Long passwordId, Passwords update) {
+    public ResponseEntity<PasswordsDTO> updateThePassword(Long passwordId, PasswordsDTO update) {
         Passwords passwords = passwordsRepo.findById(passwordId).orElseThrow(() ->
             new RuntimeException("User not found"));
 
-        passwords.setUrl(update.getUrl());
+        passwords.setUrl(update.getUrl()); // url
+        passwords.setNote(update.getNote()); // note
+        passwords.setCreatedAt(LocalDateTime.now()); // created at / modified at
         try {
-            String encodedPassword = aesUtil.encrypt(passwords.getPassword());
-            passwords.setPassword(encodedPassword);
+            String encodedPassword = aesUtil.encrypt(update.getDecryptedPassword());
+            passwords.setPassword(encodedPassword); // password
         } catch (Exception e) {
             log.error("error with encrypting the password");
         }
 
-        return passwordsRepo.save(passwords);
+        passwordsRepo.save(passwords); // now we have to return the id
+
+        PasswordsDTO passwordsDTO = new PasswordsDTO(
+            passwords.getPasswordId(),
+            passwords.getUrl(),
+            update.getDecryptedPassword(),
+            passwords.getCreatedAt(),
+            passwords.getNote()
+        );
+
+        System.out.println(passwordsDTO);
+
+        return ResponseEntity.ok(passwordsDTO);
     }
 
 }

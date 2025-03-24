@@ -1,0 +1,61 @@
+/* components/LandingPage.module.css */
+.hero {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: calc(100vh - 65px);
+	background: linear-gradient(to right, #4f46e5, #3b82f6);
+	color: white;
+	text-align: center;
+	padding: 2rem;
+}
+
+.content {
+	max-width: 600px;
+}
+
+.brand {
+	color: #facc15;
+}
+
+.tagline {
+	font-size: 1.2rem;
+	margin-top: 1rem;
+	margin-bottom: 2rem;
+}
+
+.actions {
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+}
+
+.buttonPrimary {
+	background-color: #facc15;
+	color: #1f2937;
+	padding: 0.6rem 1.2rem;
+	border-radius: 8px;
+	text-decoration: none;
+	font-weight: bold;
+	transition: background 0.3s;
+}
+
+.buttonPrimary:hover {
+	background-color: #eab308;
+}
+
+.buttonSecondary {
+	background-color: transparent;
+	border: 2px solid white;
+	color: white;
+	padding: 0.6rem 1.2rem;
+	border-radius: 8px;
+	text-decoration: none;
+	font-weight: bold;
+	transition: background 0.3s;
+}
+
+.buttonSecondary:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
